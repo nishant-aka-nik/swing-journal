@@ -12,7 +12,7 @@ function Login() {
 
     useEffect(() => {
         supabase.auth.onAuthStateChange(async (event, session) => {
-            console.log(session?.user?.role)
+        console.log('session :', session);
     
             if (session?.user?.role === 'authenticated') {
                 navigate('/success')
