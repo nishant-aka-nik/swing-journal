@@ -25,7 +25,7 @@ function Logs() {
 
         async function getLogs() {
             try {
-                const { data, error } = await supabase.from('swinglog').select('*,last_traded_price(ltp)');
+                const { data, error } = await supabase.from('swinglog').select('*,last_traded_price(last_traded_price)');
                 if (error) throw error;
                 return data;
             } catch (error) {
