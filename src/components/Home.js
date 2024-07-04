@@ -4,8 +4,8 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
-import Logs from './Logs';
 import { supabase } from '../supabase/supabaseClient';
+import SwingLogCard from './SwingLogCard';
 
 
 
@@ -46,8 +46,14 @@ function Home() {
             </Box>
 
             {/*data box*/}
-            <Logs />
-
+            <Box sx={{
+                bottom: 0,
+                width: '100%',
+                padding: 2,
+            }}>
+                <SwingLogCard />
+            </Box>
+            
 
             {/*sign out box*/}
             <Box sx={{
