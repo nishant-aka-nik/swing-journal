@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Card from "@mui/material/Card";
-import CardContent from "@mui/joy/CardContent";
 import Typography from "@mui/joy/Typography";
-import Divider from '@mui/material/Divider';
-import Box from '@mui/material/Box';
+import Box from '@mui/joy/Box';
 import Accordion from '@mui/joy/Accordion';
 import AccordionDetails from '@mui/joy/AccordionDetails';
 import AccordionGroup from '@mui/joy/AccordionGroup';
@@ -13,13 +10,26 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { supabase } from '../supabase/supabaseClient';
-
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
 
 export default function SwingLogCard() {
     const [swingLog, setswingLog] = useState([])
-    const [sortCriteria, setSortCriteria] = useState('Risk_Reward');
+    const [sortCriteria, setSortCriteria] = useState('');
     const [sortedSwingLog, setSortedSwingLog] = useState([]);
+
+    const deleteSwingLog = async (id) => {
+        try {
+            const { error } = await supabase
+                .from('swinglog')
+                .delete()
+                .eq('id', id).select('*');
+            if (error) throw error;
+            setswingLog((prevLogs) => prevLogs.filter(log => log.id !== id));
+        } catch (error) {
+            console.error('error occurred in deleteSwingLog Error: ', error);
+        }
+    }
 
     useEffect(() => {
         async function fetchData() {
@@ -64,7 +74,7 @@ export default function SwingLogCard() {
 
                     const createdAt = new Date(stock.created_at);
                     const today = new Date();
-              
+
                     const timeDifference = today - createdAt;
                     const age = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
@@ -106,96 +116,81 @@ export default function SwingLogCard() {
     }, [swingLog, sortCriteria]);
 
     return (
-
-        <Card sx={{
-            padding: '1px',
-            borderRadius: 5,
-            background: 'white',
-            border: '0.5px solid #c9ccd1',
-        }}>
-            <CardContent orientation='horizontal' sx={{ paddingLeft: 2, paddingTop: 2, paddingBottom: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                    <Box>
-                        <Typography level="h2">Swing Log</Typography>
-                    </Box>
-
-                    <Box sx={{ paddingRight: 2 }}>
-                        <Select
-                            placeholder="Sort By"
-                            size="sm"
-                            defaultValue={sortCriteria}
-                        >
-                            <Option value={'Risk_Reward'} onClick={() => setSortCriteria('Risk_Reward')}>Risk/Reward</Option>
-                            <Option value={'profit'} onClick={() => setSortCriteria('profit')}>Profit</Option>
-                            <Option value="near_target" onClick={() => setSortCriteria('near_target')}>Near Target</Option>
-                            <Option value='near_stoploss' onClick={() => setSortCriteria('near_stoploss')}>Near Stoploss</Option>
-
-                        </Select>
-                    </Box>
-
+        <Box sx={{ p: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box sx={{ paddingBottom: 1, display: 'flex', justifyContent: 'left', width: '100%', alignItems: 'center', borderBottom: '1px solid grey' }}>
+                <Box sx={{ paddingRight: 1 }}>
+                    <Typography level="title-lg">Filters: </Typography>
                 </Box>
-            </CardContent>
+                <Box sx={{ paddingRight: 1 }}>
+                    <Select
+                        placeholder="Sort By"
+                        size="sm"
+                        sx={{ minWidth: 120, maxWidth: 200 }}
+                        defaultValue={sortCriteria}
+                    >
+                        <Option value={'Risk_Reward'} onClick={() => setSortCriteria('Risk_Reward')}>Risk/Reward</Option>
+                        <Option value={'profit'} onClick={() => setSortCriteria('profit')}>Profit</Option>
+                        <Option value="near_target" onClick={() => setSortCriteria('near_target')}>Near Target</Option>
+                        <Option value='near_stoploss' onClick={() => setSortCriteria('near_stoploss')}>Near Stoploss</Option>
+                    </Select>
+                </Box>
+            </Box>
 
-            <Divider variant="middle" />
+            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                {sortedSwingLog
+                    .map((stock, index) => {
+                        console.log('stock :', stock);
+                        let progress = Math.abs(stock.progress)
+                        if (progress > 100) {
+                            progress = 100
+                        }
 
-            {sortedSwingLog
-                .map((stock, index) => {
-                    console.log('stock :', stock);
-                    const progress = Math.abs(stock.progress)
+                        const progresBarName = stock.isTarget ? 'Near Target' : 'Near Stoploss'
+                        const progressBarColor = stock.isTarget ? '#ACE1AF' : '#FA7070'
+                        const progressBarValue = stock.isTarget ? parseInt(stock.target) : parseInt(stock.stoploss)
+                        
 
-                    const progresBarName = stock.isTarget ? 'Near Target' : 'Near Stoploss'
-                    const progressBarColor = stock.isTarget ? '#ACE1AF' : '#FA7070'
-                    const progressBarValue = stock.isTarget ? parseInt(stock.target)  : parseInt(stock.stoploss)
+                        const riskReward = ((stock.stoploss - stock.buy_price) / stock.buy_price) * 100
+                        const RiskRewardMessage = riskReward > 0 ? 'Reward' : 'Risk'
 
-                    const riskReward = ((stock.stoploss - stock.buy_price) / stock.buy_price) * 100
-                    console.log('riskReward :', riskReward);
-                    const RiskRewardMessage = riskReward > 0 ? 'Reward' : 'Risk'
-                    console.log('RiskRewardMessage :', RiskRewardMessage);
+                        return (
+                            <Box key={index} sx={{ padding: 1, margin: 1, border: '1px solid grey', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', backgroundColor: 'white',
+                                borderRadius: '10px',
 
-                    return (
-                        <Card key={index} sx={{
-                            borderRadius: 5,
-                            background: 'white',
-                            boxShadow: '-5px 4px 90px red, #6c9ff1',
-                            margin: '8px',
-                            border: '0.5px solid #c9ccd1',
-                        }}>
-                            <CardContent orientation='vertical' sx={{ padding: 2, paddingBottom: 3 }}>
-                                <Box sx={{ display: 'flex', justifyContent: 'left' }}>
-                                    <Box >
-                                        <Typography level="title-md">{stock.symbol}
-                                            <Typography level="body-xs"> Rs.{stock.last_traded_price.last_traded_price}</Typography>
-                                        </Typography>
-                                    </Box>
-                                    {/* <Box >
-                                <Typography level="body-sm" alignContent={'right'}>LTP: {stock.last_traded_price.last_traded_price}</Typography>
-                            </Box> */}
+                             }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
+                                    <Typography level="title-md">{stock.symbol}
+                                        <Typography level="body-xs"> Rs.{stock.last_traded_price.last_traded_price}</Typography>
+                                    </Typography>
+                                    <DeleteForeverRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => deleteSwingLog(stock.id)}/>
                                 </Box>
-                                <Divider variant="middle" />
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Box sx={{ display: 'flex' }}>
-                                        <Typography level="body-sm">Buy Price: Rs.{stock.buy_price}</Typography>
+                                <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
+                                    <Box>
+                                        <Typography level="body-sm">Buy Price Rs.{stock.buy_price}</Typography>
                                     </Box>
-                                    <Box sx={{ display: 'flex', justifyContent: 'right' }}>
-                                        <Typography level="body-sm" alignContent={'right'}>Invested: Rs.{stock.buy_price*stock.quantity}</Typography>
+                                    <Box>
+                                        <Typography level="body-sm" alignContent={'right'}>Invested Rs.{stock.buy_price * stock.quantity}</Typography>
                                     </Box>
                                 </Box>
-                                <Divider variant="middle" />
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                                <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>
-                                            Profit: Rs. {stock.profit.toFixed(2)}
+                                            Profit Rs.{stock.profit.toFixed(2)}
                                             <Typography level='body-sm' sx={{ color: riskReward < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)})%</Typography>
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex' }}>
-                                        <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>{RiskRewardMessage}: {riskReward.toFixed(2)}%</Typography>
+                                        <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>{RiskRewardMessage} {riskReward.toFixed(2)}%</Typography>
                                     </Box>
                                 </Box>
 
                                 <Box sx={{
-                                    position: 'relative', width: '100%', paddingTop: 2, display: 'flex',
-                                    alignItems: 'center'
+                                     display: 'flex', 
+                                     flexDirection: 'row', 
+                                     width: 'inherit',
+                                      justifyContent: 'space-between' ,
+                                      padding: 1
                                 }}>
                                     <Typography level="body-sm" sx={{ paddingRight: 1 }}>
                                         Age: {stock.age}
@@ -214,12 +209,12 @@ export default function SwingLogCard() {
                                         </Typography>
                                     </LinearProgress>
                                     <Typography level="body-sm" sx={{ paddingLeft: 1 }}>
-                                    {progressBarValue}
+                                        {progressBarValue}
                                     </Typography>
                                 </Box>
 
-                                <Box sx={{ paddingTop: 2 }}>
-                                    {stock.Note && (
+                                <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
+                                    {stock.notes && (
                                         <AccordionGroup size='sm' sx={{ background: '#f0f3f5', borderRadius: 10 }}>
                                             <Accordion>
                                                 <AccordionSummary
@@ -228,18 +223,18 @@ export default function SwingLogCard() {
                                                     <Typography level="body-sm">Notes</Typography>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
-                                                    <Typography level="body-sm">{stock.Note}</Typography>
+                                                    <Typography level="body-sm">{stock.notes}</Typography>
                                                 </AccordionDetails>
                                             </Accordion>
                                         </AccordionGroup>
                                     )}
                                 </Box>
 
-                            </CardContent>
-                        </Card>
-                    )
-                })}
-        </Card>
+                            </Box>
+                        )
+                    })}
+            </Box>
+        </Box>
     )
 
 }

@@ -1,12 +1,13 @@
 // InputPage.js
 import React, { useState } from 'react';
-import { Box, Button, Input, Typography } from '@mui/joy';
+import { Box, Button, Input, Typography, Textarea } from '@mui/joy';
 import { supabase } from '../supabase/supabaseClient'; // Make sure to import your Supabase client
 
 function InputPage({ isOpen, onClose, onSuccess }) {
   const [stockSymbol, setStockName] = useState('');
   const [buyPrice, setBuyPrice] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [note, setNote] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -23,24 +24,17 @@ function InputPage({ isOpen, onClose, onSuccess }) {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
 
-      console.log('stockSymbol :', stockSymbol);
-
-
-      const { data: insertData, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('swinglog')
         .insert([
           { symbol: stockSymbol, buy_price: parsedBuyPrice, quantity: parsedQuantity, stoploss, target, user_id: data.user.id },
         ]).select('*');
 
       if (insertError) throw insertError;
-      console.log('insertError :', insertError);
-      console.log('insertData :', insertData);
 
-
-      setMessage(`Added swing trade: ${stockSymbol}`);
+      setMessage(`Added swing trade for ${stockSymbol}`);
       onSuccess();
     } catch (error) {
-      console.log('error :', error);
       setMessage(`Failed to add swing trade`);
     } finally {
       setLoading(false);
@@ -76,7 +70,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
         onClick={(e) => e.stopPropagation()}
       >
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-          <Typography level="h4">Insert Record</Typography>
+          <Typography level="h4">Add trade</Typography>
           <Input
             sx={{ mt: 2 }}
             required
@@ -101,6 +95,15 @@ function InputPage({ isOpen, onClose, onSuccess }) {
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
+          <Textarea
+            minRows={2}
+            sx={{ mt: 2 }}
+            required
+            fullWidth
+            placeholder="Note"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+          />
           <Button
             sx={{ mt: 2 }}
             type="submit"
@@ -109,7 +112,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
             color="neutral"
             disabled={loading}
           >
-            {loading ? 'Inserting...' : 'Insert Record'}
+            {loading ? 'Adding...' : 'Add trade'}
           </Button>
           {message && <Typography sx={{ mt: 2 }}>{message}</Typography>}
         </Box>
