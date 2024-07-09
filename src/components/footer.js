@@ -4,25 +4,24 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 
-function Footer() {
+function Footer({ onAddClick, onHomeClick, onSettingsClick }) {
   return (
     <Box
       sx={{
-        // borderBottom: '1px solid grey',
         position: 'fixed',
         bottom: 0,
         width: '100%',
         textAlign: 'center',
-        zIndex: 1100, // Ensures it stays above other content
-        backgroundColor: 'inherit'
+        zIndex: 1100,
+        backgroundColor: 'transparent',
       }}
     >
       <Box sx={{
         marginTop: '10px',
-        marginBottom  : '10px',
+        marginBottom: '10px',
         marginLeft: '15px',
         marginRight: '15px',
-        p: 2 ,
+        p: 2,
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -31,10 +30,9 @@ function Footer() {
         border: '0.5px solid #c9ccd1',
         backgroundColor: 'white',
       }}>
-        <HomeRoundedIcon/>
-        <AddBoxOutlinedIcon/>
-        <SettingsRoundedIcon/>
-        
+        <HomeRoundedIcon onClick={onHomeClick} />
+        <AddBoxOutlinedIcon onClick={onAddClick} />
+        <SettingsRoundedIcon onClick={onSettingsClick} />
       </Box>
     </Box>
   );

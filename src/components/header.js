@@ -42,7 +42,7 @@ function Header() {
         width: '100%',
         textAlign: 'center',
         zIndex: 1100, // Ensures it stays above other content
-        backgroundColor: 'inherit'
+        backgroundColor: 'transparent',
       }}
     >
       <Box sx={{
