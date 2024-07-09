@@ -17,7 +17,7 @@ function Login() {
             if (session?.user?.role === 'authenticated') {
                 navigate('/success')
             } else {
-                navigate('/success')
+                navigate('/')
             }
         })
     }, [navigate])
