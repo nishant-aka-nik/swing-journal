@@ -21,8 +21,6 @@ export default function SwingLogCard() {
     const [sortCriteria, setSortCriteria] = useState('Risk_Reward');
     const [sortedSwingLog, setSortedSwingLog] = useState([]);
 
-
-
     useEffect(() => {
         async function fetchData() {
             try {
@@ -64,6 +62,12 @@ export default function SwingLogCard() {
                     const profit = (stock.last_traded_price.last_traded_price - stock.buy_price) * stock.quantity
                     const profitPercentage = ((stock.last_traded_price.last_traded_price - stock.buy_price) / stock.buy_price) * 100
 
+                    const createdAt = new Date(stock.created_at);
+                    const today = new Date();
+              
+                    const timeDifference = today - createdAt;
+                    const age = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
 
                     return {
                         ...stock,
@@ -71,7 +75,8 @@ export default function SwingLogCard() {
                         isStoploss,
                         progress,
                         profit,
-                        profitPercentage
+                        profitPercentage,
+                        age
                     };
                 });
 
@@ -103,10 +108,10 @@ export default function SwingLogCard() {
     return (
 
         <Card sx={{
-            padding: 1,
+            padding: '1px',
             borderRadius: 5,
-            background: '#FCEAE3',
-            boxShadow: '-5px 4px 9px #3e5b8b, #6c9ff1',
+            background: 'white',
+            border: '0.5px solid #c9ccd1',
         }}>
             <CardContent orientation='horizontal' sx={{ paddingLeft: 2, paddingTop: 2, paddingBottom: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
@@ -140,6 +145,7 @@ export default function SwingLogCard() {
 
                     const progresBarName = stock.isTarget ? 'Near Target' : 'Near Stoploss'
                     const progressBarColor = stock.isTarget ? '#ACE1AF' : '#FA7070'
+                    const progressBarValue = stock.isTarget ? parseInt(stock.target)  : parseInt(stock.stoploss)
 
                     const riskReward = ((stock.stoploss - stock.buy_price) / stock.buy_price) * 100
                     console.log('riskReward :', riskReward);
@@ -148,11 +154,11 @@ export default function SwingLogCard() {
 
                     return (
                         <Card key={index} sx={{
-                            padding: 1,
                             borderRadius: 5,
-                            background: '#FEFBFA',
+                            background: 'white',
                             boxShadow: '-5px 4px 90px red, #6c9ff1',
                             margin: '8px',
+                            border: '0.5px solid #c9ccd1',
                         }}>
                             <CardContent orientation='vertical' sx={{ padding: 2, paddingBottom: 3 }}>
                                 <Box sx={{ display: 'flex', justifyContent: 'left' }}>
@@ -167,17 +173,11 @@ export default function SwingLogCard() {
                                 </Box>
                                 <Divider variant="middle" />
                                 <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <Typography level="body-sm">Stop Loss: {stock.stoploss}</Typography>
-                                    <Typography level="body-sm">Target: {stock.target}</Typography>
-
-                                </Box>
-                                <Divider variant="middle" />
-                                <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex' }}>
-                                        <Typography level="body-sm">Buy Price: {stock.buy_price}</Typography>
+                                        <Typography level="body-sm">Buy Price: Rs.{stock.buy_price}</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', justifyContent: 'right' }}>
-                                        <Typography level="body-sm" alignContent={'right'}>Quantity: {stock.quantity}</Typography>
+                                        <Typography level="body-sm" alignContent={'right'}>Invested: Rs.{stock.buy_price*stock.quantity}</Typography>
                                     </Box>
                                 </Box>
                                 <Divider variant="middle" />
@@ -197,11 +197,10 @@ export default function SwingLogCard() {
                                     position: 'relative', width: '100%', paddingTop: 2, display: 'flex',
                                     alignItems: 'center'
                                 }}>
-                                    <Typography level="body-sm" sx={{ paddingRight: 2 }}>
+                                    <Typography level="body-sm" sx={{ paddingRight: 1 }}>
                                         Age: {stock.age}
                                     </Typography>
                                     <LinearProgress
-
                                         size="lg"
                                         variant="soft"
                                         determinate
@@ -210,11 +209,13 @@ export default function SwingLogCard() {
                                         // color= {progressBarColor}
                                         sx={{ color: progressBarColor }}
                                     >
-
                                         <Typography level="title-sm" sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
                                             {progresBarName}
                                         </Typography>
                                     </LinearProgress>
+                                    <Typography level="body-sm" sx={{ paddingLeft: 1 }}>
+                                    {progressBarValue}
+                                    </Typography>
                                 </Box>
 
                                 <Box sx={{ paddingTop: 2 }}>
