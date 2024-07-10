@@ -214,7 +214,7 @@ export default function SwingLogCard() {
                                 </Box>
 
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
-                                    {stock.notes && (
+                                    {stock.note && (
                                         <AccordionGroup size='sm' sx={{ background: '#f0f3f5', borderRadius: 10 }}>
                                             <Accordion>
                                                 <AccordionSummary

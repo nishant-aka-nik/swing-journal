@@ -27,7 +27,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
       const { error: insertError } = await supabase
         .from('swinglog')
         .insert([
-          { symbol: stockSymbol, buy_price: parsedBuyPrice, quantity: parsedQuantity, stoploss, target, user_id: data.user.id },
+          { symbol: stockSymbol, buy_price: parsedBuyPrice, quantity: parsedQuantity, stoploss, target, user_id: data.user.id, note },
         ]).select('*');
 
       if (insertError) throw insertError;
