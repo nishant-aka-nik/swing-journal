@@ -220,10 +220,10 @@ export default function SwingLogCard() {
                                                 <AccordionSummary
                                                     expandIcon={<ExpandMoreIcon />}
                                                 >
-                                                    <Typography level="body-sm">Notes</Typography>
+                                                    <Typography level="body-sm">Note</Typography>
                                                 </AccordionSummary>
                                                 <AccordionDetails>
-                                                    <Typography level="body-sm">{stock.notes}</Typography>
+                                                    <Typography level="body-sm">{stock.note}</Typography>
                                                 </AccordionDetails>
                                             </Accordion>
                                         </AccordionGroup>
