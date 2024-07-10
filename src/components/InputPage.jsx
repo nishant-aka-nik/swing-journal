@@ -24,16 +24,18 @@ function InputPage({ isOpen, onClose, onSuccess }) {
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
 
-      const { error: insertError } = await supabase
+      const { data: newData, error: insertError } = await supabase
         .from('swinglog')
         .insert([
           { symbol: stockSymbol, buy_price: parsedBuyPrice, quantity: parsedQuantity, stoploss, target, user_id: data.user.id, note },
         ]).select('*');
 
       if (insertError) throw insertError;
+      console.log('newData :', newData);
+
 
       setMessage(`Added swing trade for ${stockSymbol}`);
-      onSuccess();
+      onSuccess(newData);
     } catch (error) {
       setMessage(`Failed to add swing trade`);
     } finally {
@@ -74,7 +76,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
           <Input
             sx={{ mt: 2 }}
             required
-            fullWidth
+            fullwidth
             placeholder="Stock Symbol"
             value={stockSymbol}
             onChange={(e) => setStockName(e.target.value.toUpperCase())}
@@ -82,7 +84,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
           <Input
             sx={{ mt: 2 }}
             required
-            fullWidth
+            fullwidth
             placeholder="Buy Price"
             value={buyPrice}
             onChange={(e) => setBuyPrice(e.target.value)}
@@ -90,7 +92,7 @@ function InputPage({ isOpen, onClose, onSuccess }) {
           <Input
             sx={{ mt: 2 }}
             required
-            fullWidth
+            fullwidth
             placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}

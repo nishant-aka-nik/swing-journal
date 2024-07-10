@@ -9,6 +9,7 @@ import Settings from '../components/Settings';
 function Success() {
   const [isInputPageOpen, setIsInputPageOpen] = useState(false);
   const [currentView, setCurrentView] = useState('home'); // Add state to manage the current view
+  const [homeKey, setHomeKey] = useState(0); 
 
   const handleAddClick = () => {
     setIsInputPageOpen(true);
@@ -18,9 +19,9 @@ function Success() {
     setIsInputPageOpen(false);
   };
 
-  const handleSuccess = () => {
+  const handleSuccess = (newData) => {
     setIsInputPageOpen(false);
-    window.location.reload();
+    setHomeKey(prevKey => prevKey + 1);
   };
 
   const handleHomeClick = () => {
@@ -35,7 +36,7 @@ function Success() {
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#f7f9fc' }}>
       <Header />
       <Box sx={{ mt: '50px', flex: 1 }}> {/* Adjust mt to match the Header height */}
-        {currentView === 'home' && <Home />}
+        {currentView === 'home' && <Home key={homeKey}/>}
         {currentView === 'settings' && <Settings />}
       </Box>
       <Footer 
