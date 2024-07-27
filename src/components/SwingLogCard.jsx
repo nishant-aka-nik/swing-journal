@@ -39,7 +39,8 @@ export default function SwingLogCard() {
 
                 async function getLogs() {
                     try {
-                        const { data, error } = await supabase.from('swinglog').select('*,last_traded_price(last_traded_price)');
+                        //TODO: make table details config based
+                        const { data, error } = await supabase.from('swinglog').select('*,todays_data(close)');
                         if (error) throw error;
                         return data;
                     } catch (error) {
@@ -53,13 +54,13 @@ export default function SwingLogCard() {
 
                     const midValue = stock.target - stock.target * 0.05;
 
-                    const isTarget = stock.last_traded_price.last_traded_price >= midValue;
-                    const isStoploss = stock.last_traded_price.last_traded_price <= midValue;
+                    const isTarget = stock.todays_data.close >= midValue;
+                    const isStoploss = stock.todays_data.close <= midValue;
 
                     const targetPercentage = 5;
                     const stoplossPercentage = 10;
 
-                    const percentageDiffBetweenLTPandMidvalue = ((stock.last_traded_price.last_traded_price - midValue) / stock.last_traded_price.last_traded_price) * 100;
+                    const percentageDiffBetweenLTPandMidvalue = ((stock.todays_data.close - midValue) / stock.todays_data.close) * 100;
 
                     if (isTarget) {
                         progress = (percentageDiffBetweenLTPandMidvalue / targetPercentage) * 100;
@@ -69,8 +70,8 @@ export default function SwingLogCard() {
                         progress = (percentageDiffBetweenLTPandMidvalue / stoplossPercentage) * 100;
                     }
 
-                    const profit = (stock.last_traded_price.last_traded_price - stock.buy_price) * stock.quantity
-                    const profitPercentage = ((stock.last_traded_price.last_traded_price - stock.buy_price) / stock.buy_price) * 100
+                    const profit = (stock.todays_data.close - stock.buy_price) * stock.quantity
+                    const profitPercentage = ((stock.todays_data.close - stock.buy_price) / stock.buy_price) * 100
 
                     const createdAt = new Date(stock.created_at);
                     const today = new Date();
@@ -160,7 +161,7 @@ export default function SwingLogCard() {
                              }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
                                     <Typography level="title-md">{stock.symbol}
-                                        <Typography level="body-xs"> Rs.{stock.last_traded_price.last_traded_price}</Typography>
+                                        <Typography level="body-xs"> Rs.{stock.todays_data.close}</Typography>
                                     </Typography>
                                     <DeleteForeverRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => deleteSwingLog(stock.id)}/>
                                 </Box>
