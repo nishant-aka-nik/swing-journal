@@ -72,7 +72,7 @@ export default function SwingLogCard() {
 
                     const profit = (stock.todays_data.close - stock.buy_price) * stock.quantity
                     const profitPercentage = ((stock.todays_data.close - stock.buy_price) / stock.buy_price) * 100
-
+                    const invested = (stock.buy_price * stock.quantity).toFixed(2)
                     const createdAt = new Date(stock.created_at);
                     const today = new Date();
                     
@@ -91,7 +91,8 @@ export default function SwingLogCard() {
                         progress,
                         profit,
                         profitPercentage,
-                        age
+                        age,
+                        invested
                     };
                 });
 
@@ -172,8 +173,7 @@ export default function SwingLogCard() {
 
                         return (
                             <Box key={index} sx={{ padding: 1, margin: 1, border: '1px solid grey', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', backgroundColor: 'white',
-                                borderRadius: '10px',
-
+                                borderRadius: '20px 0px 20px 0px',
                              }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
                                     <Typography level="title-md">{stock.symbol}
@@ -186,7 +186,7 @@ export default function SwingLogCard() {
                                         <Typography level="body-sm">Buy Price Rs.{stock.buy_price}</Typography>
                                     </Box>
                                     <Box>
-                                        <Typography level="body-sm" alignContent={'right'}>Invested Rs.{stock.buy_price * stock.quantity}</Typography>
+                                        <Typography level="body-sm" alignContent={'right'}>Invested Rs.{stock.invested}</Typography>
                                     </Box>
                                 </Box>
 
