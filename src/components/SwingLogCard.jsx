@@ -55,7 +55,7 @@ export default function SwingLogCard() {
                     const targetPercentage = 5;
                     const stoplossPercentage = 10;
 
-                    const pivot = stock.target - (stock.target * (targetPercentage/100));
+                    const pivot = stock.target - (stock.target * (targetPercentage / 100));
 
                     const isTarget = stock.todays_data.close >= pivot;
                     const isStoploss = stock.todays_data.close <= pivot;
@@ -75,11 +75,11 @@ export default function SwingLogCard() {
                     const invested = (stock.buy_price * stock.quantity).toFixed(2)
                     const createdAt = new Date(stock.created_at);
                     const today = new Date();
-                    
+
                     // Set both dates to midnight to avoid time differences
                     createdAt.setHours(0, 0, 0, 0);
                     today.setHours(0, 0, 0, 0);
-                    
+
                     const timeDifference = today - createdAt;
                     const age = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
@@ -108,7 +108,7 @@ export default function SwingLogCard() {
     useEffect(() => {
         const sortedData = [...swingLog].sort((a, b) => {
             let aValue, bValue;
-    
+
             switch (sortCriteria) {
                 case 'Risk_Reward':
                     aValue = Number(a.Risk_Reward);
@@ -132,7 +132,7 @@ export default function SwingLogCard() {
         });
         setSortedSwingLog(sortedData);
     }, [swingLog, sortCriteria]);
-    
+
     return (
         <Box sx={{ p: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box sx={{ paddingBottom: 1, display: 'flex', justifyContent: 'left', width: '100%', alignItems: 'center', borderBottom: '1px solid grey' }}>
@@ -154,7 +154,7 @@ export default function SwingLogCard() {
                 </Box>
             </Box>
 
-            <Box sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+            <Box sx={{ paddingBottom: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                 {sortedSwingLog
                     .map((stock, index) => {
                         console.log('stock :', stock);
@@ -166,20 +166,21 @@ export default function SwingLogCard() {
                         const progresBarName = stock.isTarget ? 'Near Target' : 'Near Stoploss'
                         const progressBarColor = stock.isTarget ? '#ACE1AF' : '#FA7070'
                         const progressBarValue = stock.isTarget ? parseInt(stock.target) : parseInt(stock.stoploss)
-                        
+
 
                         const riskReward = ((stock.stoploss - stock.buy_price) / stock.buy_price) * 100
                         const RiskRewardMessage = riskReward > 0 ? 'Reward' : 'Risk'
 
                         return (
-                            <Box key={index} sx={{ padding: 1, margin: 1, border: '1px solid grey', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', backgroundColor: 'white',
+                            <Box key={index} sx={{
+                                padding: 1, margin: 1, border: '1px solid grey', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', backgroundColor: 'white',
                                 borderRadius: '20px 0px 20px 0px',
-                             }}>
+                            }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
                                     <Typography level="title-md">{stock.symbol}
                                         <Typography level="body-xs"> Rs.{stock.todays_data.close}</Typography>
                                     </Typography>
-                                    <DeleteForeverRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => deleteSwingLog(stock.id)}/>
+                                    <DeleteForeverRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => deleteSwingLog(stock.id)} />
                                 </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box>
@@ -203,11 +204,11 @@ export default function SwingLogCard() {
                                 </Box>
 
                                 <Box sx={{
-                                     display: 'flex', 
-                                     flexDirection: 'row', 
-                                     width: 'inherit',
-                                      justifyContent: 'space-between' ,
-                                      padding: 1
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    width: 'inherit',
+                                    justifyContent: 'space-between',
+                                    padding: 1
                                 }}>
                                     <Typography level="body-sm" sx={{ paddingRight: 1 }}>
                                         Age: {stock.age}
