@@ -19,8 +19,8 @@ function InputPage({ isOpen, onClose, onSuccess }) {
     try {
       const parsedQuantity = parseInt(quantity);
       const parsedBuyPrice = parseFloat(buyPrice);
-      const stoploss = parsedBuyPrice - parsedBuyPrice * 0.05;
-      const target = parsedBuyPrice + parsedBuyPrice * 0.10;
+      const stoploss = parsedBuyPrice - (parsedBuyPrice * 0.10);
+      const target = parsedBuyPrice + (parsedBuyPrice * 0.05);
       const { data, error } = await supabase.auth.getUser();
       if (error) throw error;
 

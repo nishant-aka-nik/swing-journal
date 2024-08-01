@@ -52,22 +52,22 @@ export default function SwingLogCard() {
                     console.log('stock1111111 :', stock);
                     let progress = 0;
 
-                    const midValue = stock.target - stock.target * 0.05;
-
-                    const isTarget = stock.todays_data.close >= midValue;
-                    const isStoploss = stock.todays_data.close <= midValue;
-
                     const targetPercentage = 5;
                     const stoplossPercentage = 10;
 
-                    const percentageDiffBetweenLTPandMidvalue = ((stock.todays_data.close - midValue) / stock.todays_data.close) * 100;
+                    const pivot = stock.target - (stock.target * (targetPercentage/100));
+
+                    const isTarget = stock.todays_data.close >= pivot;
+                    const isStoploss = stock.todays_data.close <= pivot;
+
+                    const percentageDiffBetweenCloseAndPivot = ((stock.todays_data.close - pivot) / stock.todays_data.close) * 100;
 
                     if (isTarget) {
-                        progress = (percentageDiffBetweenLTPandMidvalue / targetPercentage) * 100;
+                        progress = (percentageDiffBetweenCloseAndPivot / targetPercentage) * 100;
                     }
 
                     if (isStoploss) {
-                        progress = (percentageDiffBetweenLTPandMidvalue / stoplossPercentage) * 100;
+                        progress = (percentageDiffBetweenCloseAndPivot / stoplossPercentage) * 100;
                     }
 
                     const profit = (stock.todays_data.close - stock.buy_price) * stock.quantity
@@ -75,7 +75,11 @@ export default function SwingLogCard() {
 
                     const createdAt = new Date(stock.created_at);
                     const today = new Date();
-
+                    
+                    // Set both dates to midnight to avoid time differences
+                    createdAt.setHours(0, 0, 0, 0);
+                    today.setHours(0, 0, 0, 0);
+                    
                     const timeDifference = today - createdAt;
                     const age = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
@@ -102,20 +106,32 @@ export default function SwingLogCard() {
 
     useEffect(() => {
         const sortedData = [...swingLog].sort((a, b) => {
-            if (sortCriteria === 'Risk_Reward') {
-                return b.Risk_Reward - a.Risk_Reward;
-            } else if (sortCriteria === 'profit') {
-                return b.Profit - a.Profit;
-            } else if (sortCriteria === 'near_target') {
-                return (b.progress - a.progress);
-            } else if (sortCriteria === 'near_stoploss') {
-                return (a.progress - b.progress);
+            let aValue, bValue;
+    
+            switch (sortCriteria) {
+                case 'Risk_Reward':
+                    aValue = Number(a.Risk_Reward);
+                    bValue = Number(b.Risk_Reward);
+                    return bValue - aValue;
+                case 'profit':
+                    aValue = Number(a.profit);
+                    bValue = Number(b.profit);
+                    return bValue - aValue;
+                case 'near_target':
+                    aValue = Number(a.progress);
+                    bValue = Number(b.progress);
+                    return bValue - aValue;
+                case 'near_stoploss':
+                    aValue = Number(a.progress);
+                    bValue = Number(b.progress);
+                    return aValue - bValue;
+                default:
+                    return 0;
             }
-            return 0;
         });
         setSortedSwingLog(sortedData);
     }, [swingLog, sortCriteria]);
-
+    
     return (
         <Box sx={{ p: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box sx={{ paddingBottom: 1, display: 'flex', justifyContent: 'left', width: '100%', alignItems: 'center', borderBottom: '1px solid grey' }}>
@@ -176,9 +192,9 @@ export default function SwingLogCard() {
 
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>
+                                        <Typography level="body-sm" sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}>
                                             Profit Rs.{stock.profit.toFixed(2)}
-                                            <Typography level='body-sm' sx={{ color: riskReward < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)})%</Typography>
+                                            <Typography level='body-sm' sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)})%</Typography>
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex' }}>
