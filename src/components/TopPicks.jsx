@@ -16,17 +16,22 @@ function TopPicks() {
 
                 async function getTopPicks() {
                     try {
-                        const today = new Date().toISOString().split('T')[0];
-
+                        const today = new Date();
+                        const yesterday = new Date(today);
+                        yesterday.setDate(today.getDate() - 1);
+                
+                        const formattedYesterday = yesterday.toISOString().split('T')[0];
+                        const formattedToday = today.toISOString().split('T')[0];
+                
                         const { data, error } = await supabase.from('filter_history')
                             .select('*')
-                            .gte('created_at', `${today}T00:00:00Z`) // Start of today
-                            .lt('created_at', `${today}T23:59:59Z`);
-
+                            .gte('created_at', `${formattedYesterday}T00:00:00Z`) // Start of yesterday
+                            .lt('created_at', `${formattedToday}T00:00:00Z`); // Start of today
+                
                         if (error) throw error;
                         return data;
                     } catch (error) {
-                        console.error('error occurred in getLogs Error: ', error);
+                        console.error('error occurred in getTopPicks Error: ', error);
                     }
                 }
 
