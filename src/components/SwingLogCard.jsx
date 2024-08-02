@@ -40,7 +40,7 @@ export default function SwingLogCard() {
                 async function getLogs() {
                     try {
                         //TODO: make table details config based
-                        const { data, error } = await supabase.from('swinglog').select('*,todays_data(close)');
+                        const { data, error } = await supabase.from('swinglog').select('*,todays_data(*)');
                         if (error) throw error;
                         return data;
                     } catch (error) {
@@ -178,7 +178,7 @@ export default function SwingLogCard() {
                             }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
                                     <Typography level="title-md">{stock.symbol}
-                                        <Typography level="body-xs"> Rs.{stock.todays_data.close}</Typography>
+                                        <Typography level="body-xs"> Rs.{stock.todays_data.close} ({stock.todays_data.change_pct}%)</Typography>
                                     </Typography>
                                     <DeleteForeverRoundedIcon sx={{ cursor: 'pointer' }} onClick={() => deleteSwingLog(stock.id)} />
                                 </Box>
