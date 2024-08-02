@@ -3,8 +3,9 @@ import Box from '@mui/material/Box';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-function Footer({ onAddClick, onHomeClick, onSettingsClick }) {
+function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick }) {
   return (
     <Box
       sx={{
@@ -31,6 +32,7 @@ function Footer({ onAddClick, onHomeClick, onSettingsClick }) {
         backgroundColor: 'white',
       }}>
         <HomeRoundedIcon onClick={onHomeClick} />
+        <EmojiEventsIcon onClick={onTopPicksClick} />
         <AddBoxOutlinedIcon onClick={onAddClick} />
         <SettingsRoundedIcon onClick={onSettingsClick} />
       </Box>
