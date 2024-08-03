@@ -16,37 +16,12 @@ function TopPicks() {
 
                 async function getTopPicks() {
                     try {
-                        const now = new Date();
-                        
-                        // Set the start of yesterday (12 AM)
-                        const yesterdayStart = new Date(now);
-                        yesterdayStart.setDate(now.getDate() - 1);
-                        yesterdayStart.setHours(0, 0, 0, 0);
-                        
-                        // Set the start of tomorrow (12 AM)
-                        const tomorrowStart = new Date(now);
-                        tomorrowStart.setDate(now.getDate() + 1);
-                        tomorrowStart.setHours(0, 0, 0, 0);
-                
-                        // Convert to UTC strings
-                        const formattedYesterdayStart = yesterdayStart.toISOString();
-                        const formattedTomorrowStart = tomorrowStart.toISOString();
-                
-                        console.log('Querying with:', { formattedYesterdayStart, formattedTomorrowStart });
-                
-                        const { data, error } = await supabase.from('filter_history')
-                            .select('*')
-                            .gte('created_at', formattedYesterdayStart) // Start of yesterday
-                            .lt('created_at', formattedTomorrowStart); // Before start of tomorrow
+                        const { data, error } = await supabase.from('filter_history').select('*').eq('entry', true);
                 
                         if (error) {
                             console.error('Query error:', error);
                             throw error;
                         }
-                
-                        console.log('Retrieved data:', data);
-                        console.log('Number of records retrieved:', data.length);
-                
                         return data;
                     } catch (error) {
                         console.error('Error occurred in getTopPicks:', error);
