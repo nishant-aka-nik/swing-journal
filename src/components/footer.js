@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 
 function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick }) {
   return (
@@ -32,7 +32,7 @@ function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick }) {
         backgroundColor: 'white',
       }}>
         <HomeRoundedIcon onClick={onHomeClick} />
-        <EmojiEventsIcon onClick={onTopPicksClick} />
+        <RocketLaunchIcon onClick={onTopPicksClick} />
         <AddBoxOutlinedIcon onClick={onAddClick} />
         <SettingsRoundedIcon onClick={onSettingsClick} />
       </Box>
