@@ -84,7 +84,7 @@ function TopPicks() {
                                         <Typography level="body-sm"> Wick: {stock.topWick.toFixed(2)}%</Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex', flexDirection: 'column', width: 'inherit', alignItems: 'center', marginTop: '10px' }}>
-                                        <Button sx={{ backgroundColor: stock.problalityColor }}>{stock.profitProbability}</Button>
+                                        <Button sx={{ backgroundColor: stock.problalityColor }} onClick={() => window.open(`https://finance.yahoo.com/chart/${stock.symbol}.NS`, '_blank')}>{stock.profitProbability}</Button>
                                     </Box>
                                 </Box>
 
