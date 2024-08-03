@@ -34,13 +34,14 @@ export default function SwingLogCard() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const logsData = await getLogs();
-                console.log('logsData :', logsData);
+                const { data: { user } } = await supabase.auth.getUser();
+                const userId = user ? user.id : null;
+                const logsData = await getLogs(userId);
 
-                async function getLogs() {
+                async function getLogs(userId) {
                     try {
                         //TODO: make table details config based
-                        const { data, error } = await supabase.from('swinglog').select('*,todays_data(*)');
+                        const { data, error } = await supabase.from('swinglog').select('*,todays_data(*)').eq('user_id', userId);
                         if (error) throw error;
                         return data;
                     } catch (error) {
