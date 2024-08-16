@@ -11,12 +11,19 @@ import Select from '@mui/joy/Select';
 import Option from '@mui/joy/Option';
 import { supabase } from '../supabase/supabaseClient';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 export default function SwingLogCard() {
     const [swingLog, setswingLog] = useState([])
     const [sortCriteria, setSortCriteria] = useState('');
     const [sortedSwingLog, setSortedSwingLog] = useState([]);
+    const [totalInvested, settotalInvested] = useState(0);
+    const [totalProfit, settotalProfit] = useState(0)
+    const [totalProfitPercentage, settotalProfitPercentage] = useState(0)
+    const [profitIcon, setprofitIcon] = useState('')
+    const [profitColor, setprofitColor] = useState('')
 
     const deleteSwingLog = async (id) => {
         try {
@@ -28,6 +35,26 @@ export default function SwingLogCard() {
             setswingLog((prevLogs) => prevLogs.filter(log => log.id !== id));
         } catch (error) {
             console.error('error occurred in deleteSwingLog Error: ', error);
+        }
+    }
+
+    function getProfitIcon(totalProfit) {
+        if (totalProfit > 0) {
+            return <ArrowCircleUpIcon color="success" />;
+        } else if (totalProfit < 0) {
+            return <ArrowCircleDownIcon color="error" />;
+        } else {
+            return <ArrowCircleDownIcon color="warning" />;
+        }
+    }
+
+    function getProfitColor(totalProfit) {
+        if (totalProfit > 0) {
+            return 'green';
+        } else if (totalProfit < 0) {
+            return 'red';
+        } else {
+            return 'yellow';
         }
     }
 
@@ -84,6 +111,8 @@ export default function SwingLogCard() {
                     const timeDifference = today - createdAt;
                     const age = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
 
+                    const url = `https://finance.yahoo.com/chart/${stock.symbol}.NS/`;
+
 
                     return {
                         ...stock,
@@ -93,9 +122,21 @@ export default function SwingLogCard() {
                         profit,
                         profitPercentage,
                         age,
-                        invested
+                        invested,
+                        url
                     };
                 });
+
+
+                const totalInvested = updatedSwingLog.reduce((total, log) => total + (log.buy_price * log.quantity), 0);
+                const totalCurrentValue = updatedSwingLog.reduce((total, log) => total + (log.todays_data.close * log.quantity), 0);
+                const totalProfit = totalCurrentValue - totalInvested
+                const totalProfitPercentage = ((totalCurrentValue - totalInvested) / totalInvested) * 100
+                settotalInvested(totalInvested.toFixed(2));
+                settotalProfit(totalProfit.toFixed(2));
+                settotalProfitPercentage(totalProfitPercentage.toFixed(2));
+                setprofitIcon(getProfitIcon(totalProfit));
+                setprofitColor(getProfitColor(totalProfit));
 
                 setswingLog(updatedSwingLog)
             } catch (error) {
@@ -136,7 +177,14 @@ export default function SwingLogCard() {
 
     return (
         <Box sx={{ p: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Box sx={{ paddingBottom: 1, display: 'flex', justifyContent: 'left', width: '100%', alignItems: 'center', borderBottom: '1px solid grey' }}>
+            <Box sx={{ padding: 1, display: 'flex', flexDirection: 'column', width: '100%', alignItems: 'center', marginBottom: 1, borderRadius: '15px', backgroundColor: '#F3F8FF' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
+                    <Typography level="body-sm">Total Profit: <Typography level="title-lg" sx={{ display: 'flex', alignItems: 'center', color: profitColor }}>{totalProfit} ({totalProfitPercentage}%) {profitIcon}</Typography> </Typography>
+                    <Typography level="body-sm">Total Invested: <Typography level="title-md" >{totalInvested}</Typography></Typography>
+                </Box>
+            </Box>
+
+            <Box sx={{ paddingBottom: 1, paddingTop: 1, display: 'flex', justifyContent: 'left', width: '100%', alignItems: 'center', borderBottom: '1px solid grey', borderTop: '1px solid grey' }}>
                 <Box sx={{ paddingRight: 1 }}>
                     <Typography level="title-lg">Filters: </Typography>
                 </Box>
@@ -185,17 +233,17 @@ export default function SwingLogCard() {
                                 </Box>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box>
-                                        <Typography level="body-sm">Buy Price Rs.{stock.buy_price}</Typography>
+                                        <Typography level="body-sm"> Buy Price: {stock.buy_price}</Typography>
                                     </Box>
                                     <Box>
-                                        <Typography level="body-sm" alignContent={'right'}>Invested Rs.{stock.invested}</Typography>
+                                        <Typography level="body-sm" alignContent={'right'}>Invested: {stock.invested}</Typography>
                                     </Box>
                                 </Box>
 
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <Typography level="body-sm" sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}>
-                                            Profit Rs.{stock.profit.toFixed(2)}
+                                            Profit: {stock.profit.toFixed(2)}
                                             <Typography level='body-sm' sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)})%</Typography>
                                         </Typography>
                                     </Box>
@@ -211,9 +259,6 @@ export default function SwingLogCard() {
                                     justifyContent: 'space-between',
                                     padding: 1
                                 }}>
-                                    <Typography level="body-sm" sx={{ paddingRight: 1 }}>
-                                        Age: {stock.age}
-                                    </Typography>
                                     <LinearProgress
                                         size="lg"
                                         variant="soft"
@@ -229,6 +274,29 @@ export default function SwingLogCard() {
                                     </LinearProgress>
                                     <Typography level="body-sm" sx={{ paddingLeft: 1 }}>
                                         {progressBarValue}
+                                    </Typography>
+                                </Box>
+
+
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    width: 'inherit',
+                                    justifyContent: 'space-between',
+                                    padding: 1,
+                                    alignItems: 'center'
+                                }}>
+                                    <Typography level="body-sm">
+                                        Age: {stock.age}
+                                    </Typography>
+                                    <Typography level="body-sm" >
+                                        Stoploss: {stock.stoploss.toFixed(0)}
+                                    </Typography>
+                                    <Typography level="body-sm" >
+                                        Target: {stock.target.toFixed(0)}
+                                    </Typography>
+                                    <Typography level="body-sm" onClick={() => window.open(stock.url)} variant="soft" color="warning" sx={{ cursor: 'pointer' , marginRight: .5}} >
+                                        Open Chart
                                     </Typography>
                                 </Box>
 
