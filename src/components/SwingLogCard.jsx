@@ -13,7 +13,6 @@ import { supabase } from '../supabase/supabaseClient';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 export default function SwingLogCard() {
     const [swingLog, setswingLog] = useState([])
