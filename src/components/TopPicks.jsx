@@ -16,8 +16,7 @@ function TopPicks() {
 
                 async function getTopPicks() {
                     try {
-                        const { data, error } = await supabase.from('filter_history').select('*').eq('entry', true);
-                
+                        const { data, error } = await supabase.from('filter_history').select('*,todays_data(*)').eq('entry', true);
                         if (error) {
                             console.error('Query error:', error);
                             throw error;
@@ -29,8 +28,8 @@ function TopPicks() {
                 }
 
                 const updatedTopPicks = topPicks.map((stock) => {
-                    const volumeTimes = (stock.volume / stock.daily_avg_volume).toFixed(2);
-                    const topWick = ((stock.high - stock.close) / stock.high) * 100;
+                    const volumeTimes = (stock.todays_data.volume / stock.todays_data.daily_avg_volume).toFixed(2);
+                    const topWick = ((stock.todays_data.high - stock.todays_data.close) / stock.todays_data.high) * 100;
                     let profitProbability = 0;
                     let problalityColor = '';
                     if (volumeTimes < 1.5) {
@@ -43,7 +42,7 @@ function TopPicks() {
                         profitProbability = 'Strong Profit Probability';
                         problalityColor = '#2EB086';
                     }
-                    return { ...stock, volumeTimes, topWick, profitProbability, problalityColor };
+                    return { ...stock.todays_data, volumeTimes, topWick, profitProbability, problalityColor };
                 });
 
                 setTopPicks(updatedTopPicks);
@@ -60,7 +59,7 @@ function TopPicks() {
         <Box sx={{ p: 2, border: '1px grey', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box sx={{ width: '100%', padding: 2 }}>
                 <Typography level='title-lg' align='center'>Top picks for today 🏆</Typography>
-                { topPicks.length === 0 && <Typography variant="h6" align='center' padding={2}>No top picks for today</Typography> }
+                {topPicks.length === 0 && <Typography variant="h6" align='center' padding={2}>No top picks for today</Typography>}
             </Box>
 
             <Box sx={{ paddingBottom: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
@@ -83,8 +82,9 @@ function TopPicks() {
                                         <Typography level="body-sm"> Volume: {stock.volumeTimes}x</Typography>
                                         <Typography level="body-sm"> Wick: {stock.topWick.toFixed(2)}%</Typography>
                                     </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', width: 'inherit', alignItems: 'center', marginTop: '10px' }}>
-                                        <Button sx={{ backgroundColor: stock.problalityColor }} onClick={() => window.open(`https://finance.yahoo.com/chart/${stock.symbol}.NS`, '_blank')}>{stock.profitProbability}</Button>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', alignItems: 'center', marginTop: '10px', justifyContent: 'center' }}>
+                                        <Button sx={{ backgroundColor: stock.problalityColor, marginRight: '10px' }}>{stock.profitProbability}</Button>
+                                        <Button sx={{ marginLeft: '10px' }} onClick={() => window.open(`https://finance.yahoo.com/chart/${stock.symbol}.NS`, '_blank')}>Open  Chart</Button>
                                     </Box>
                                 </Box>
 
