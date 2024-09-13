@@ -13,6 +13,8 @@ import { supabase } from '../supabase/supabaseClient';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import Divider from '@mui/joy/Divider';
+
 
 export default function SwingLogCard() {
     const [swingLog, setswingLog] = useState([])
@@ -223,6 +225,7 @@ export default function SwingLogCard() {
                             <Box key={index} sx={{
                                 padding: 1, margin: 1, border: '1px solid grey', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', backgroundColor: 'white',
                                 borderRadius: '20px 0px 20px 0px',
+                                boxShadow: '0px 3px 2px rgba(0, 0, 0, 0.1)'
                             }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between', marginBottom: 1 }}>
                                     <Typography level="title-md">{stock.symbol}
@@ -235,21 +238,23 @@ export default function SwingLogCard() {
                                         <Typography level="body-sm"> Buy Price: {stock.buy_price}</Typography>
                                     </Box>
                                     <Box>
-                                        <Typography level="body-sm" alignContent={'right'}>Invested: {stock.invested}</Typography>
+                                        <Typography level="body-sm" alignContent={'right'}>Invested: {stock.invested} ({stock.quantity}U)</Typography>
                                     </Box>
                                 </Box>
+                                <Divider />
 
                                 <Box sx={{ display: 'flex', flexDirection: 'row', width: 'inherit', justifyContent: 'space-between' }}>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                                         <Typography level="body-sm" sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}>
                                             Profit: {stock.profit.toFixed(2)}
-                                            <Typography level='body-sm' sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)})%</Typography>
+                                            <Typography level='body-sm' sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}> ({stock.profitPercentage.toFixed(2)}%)</Typography>
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex' }}>
                                         <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>{RiskRewardMessage} {riskReward.toFixed(2)}%</Typography>
                                     </Box>
                                 </Box>
+                                <Divider />
 
                                 <Box sx={{
                                     display: 'flex',
@@ -275,7 +280,6 @@ export default function SwingLogCard() {
                                         {progressBarValue}
                                     </Typography>
                                 </Box>
-
 
                                 <Box sx={{
                                     display: 'flex',
