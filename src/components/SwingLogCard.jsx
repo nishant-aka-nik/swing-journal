@@ -207,7 +207,6 @@ export default function SwingLogCard() {
             <Box sx={{ paddingBottom: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                 {sortedSwingLog
                     .map((stock, index) => {
-                        console.log('stock :', stock);
                         let progress = Math.abs(stock.progress)
                         if (progress > 100) {
                             progress = 100
@@ -216,6 +215,7 @@ export default function SwingLogCard() {
                         const progresBarName = stock.isTarget ? 'Near Target' : 'Near Stoploss'
                         const progressBarColor = stock.isTarget ? '#ACE1AF' : '#FA7070'
                         const progressBarValue = stock.isTarget ? parseInt(stock.target) : parseInt(stock.stoploss)
+                        const longTerm = stock.long_position;
 
 
                         const riskReward = ((stock.stoploss - stock.buy_price) / stock.buy_price) * 100
@@ -251,7 +251,11 @@ export default function SwingLogCard() {
                                         </Typography>
                                     </Box>
                                     <Box sx={{ display: 'flex' }}>
-                                        <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>{RiskRewardMessage} {riskReward.toFixed(2)}%</Typography>
+                                        {
+                                            longTerm ?
+                                                <Typography level="body-sm" sx={{ color: stock.profit.toFixed(2) < 0 ? 'red' : 'green' }}>Long Term</Typography> :
+                                                <Typography level="body-sm" sx={{ color: riskReward < 0 ? 'red' : 'green' }}>{RiskRewardMessage} {riskReward.toFixed(2)}%</Typography>
+                                        }
                                     </Box>
                                 </Box>
                                 <Divider />
@@ -298,7 +302,7 @@ export default function SwingLogCard() {
                                     <Typography level="body-sm" >
                                         Target: {stock.target.toFixed(0)}
                                     </Typography>
-                                    <Typography level="body-sm" onClick={() => window.open(stock.url)} variant="soft" color="warning" sx={{ cursor: 'pointer' , marginRight: .5}} >
+                                    <Typography level="body-sm" onClick={() => window.open(stock.url)} variant="soft" color="warning" sx={{ cursor: 'pointer', marginRight: .5 }} >
                                         Open Chart
                                     </Typography>
                                 </Box>
