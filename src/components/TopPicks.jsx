@@ -33,13 +33,13 @@ function TopPicks() {
                     let profitProbability = 0;
                     let problalityColor = '';
                     if (volumeTimes < 1.5) {
-                        profitProbability = 'Weak Profit Probability';
+                        profitProbability = 'Low Volume Today';
                         problalityColor = '#FA7070';
                     } else if (volumeTimes < 2.5) {
-                        profitProbability = 'Moderate Profit Probability';
+                        profitProbability = 'Medium Volume Today';
                         problalityColor = 'orange';
                     } else {
-                        profitProbability = 'Strong Profit Probability';
+                        profitProbability = 'High Volume Today';
                         problalityColor = '#2EB086';
                     }
                     return { ...stock.todays_data, volumeTimes, topWick, profitProbability, problalityColor };
@@ -58,7 +58,7 @@ function TopPicks() {
     return (
         <Box sx={{ p: 2, border: '1px grey', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box sx={{ width: '100%', padding: 2 }}>
-                <Typography level='title-lg' align='center'>Top picks for today 🏆</Typography>
+                <Typography level='title-lg' align='center'>Breakout Entry Stocks</Typography>
                 {topPicks.length === 0 && <Typography variant="h6" align='center' padding={2}>No top picks for today</Typography>}
             </Box>
 

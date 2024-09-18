@@ -20,6 +20,7 @@ async function fetchUserData() {
     return null;
   }
 }
+
 function Header() {
   const [user, setUser] = useState({});
 
@@ -60,7 +61,7 @@ function Header() {
         backgroundColor: 'white',
       }}>
         <PixRoundedIcon />
-        <Typography level='title-lg'>Home</Typography>
+        <Typography level='title-lg'>Argus</Typography>
         <Avatar size="sm" variant="outlined" alt="User Avatar" src={user?.user_metadata?.avatar_url} sx={{ ml: 2 }} />
       </Box>
     </Box>

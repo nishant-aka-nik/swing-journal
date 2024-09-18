@@ -4,8 +4,9 @@ import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import SourceIcon from '@mui/icons-material/Source';
 
-function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick }) {
+function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick, onGoalBasketClick }) {
   return (
     <Box
       sx={{
@@ -34,6 +35,7 @@ function Footer({ onAddClick, onHomeClick, onSettingsClick, onTopPicksClick }) {
         <HomeRoundedIcon onClick={onHomeClick} />
         <RocketLaunchIcon onClick={onTopPicksClick} />
         <AddBoxOutlinedIcon onClick={onAddClick} />
+        <SourceIcon onClick={onGoalBasketClick}/>
         <SettingsRoundedIcon onClick={onSettingsClick} />
       </Box>
     </Box>

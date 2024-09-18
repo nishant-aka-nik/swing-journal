@@ -6,6 +6,7 @@ import Footer from '../components/footer';
 import InputPage from '../components/InputPage';
 import Settings from '../components/Settings';
 import TopPicks from '../components/TopPicks';
+import GoalBasket from '../components/goalbasket';
 
 function Success() {
   const [isInputPageOpen, setIsInputPageOpen] = useState(false);
@@ -30,11 +31,15 @@ function Success() {
   };
 
   const handleSettingsClick = () => {
-    setCurrentView('settings'); // Set the current view to 'settings' (if you have a settings component)
+    setCurrentView('settings');
   };
 
   const handleTopPicksClick = () => {
-    setCurrentView('toppicks'); // Set the current view to 'settings' (if you have a settings component)
+    setCurrentView('toppicks');
+  };
+
+  const handleGoalBasketClick = () => {
+    setCurrentView('goalbasket');
   };
 
   return (
@@ -44,12 +49,14 @@ function Success() {
         {currentView === 'home' && <Home key={homeKey}/>}
         {currentView === 'settings' && <Settings />}
         {currentView === 'toppicks' && <TopPicks />}
+        {currentView === 'goalbasket' && <GoalBasket />}
       </Box>
       <Footer 
         onAddClick={handleAddClick}
         onHomeClick={handleHomeClick}
         onSettingsClick={handleSettingsClick}
         onTopPicksClick={handleTopPicksClick}
+        onGoalBasketClick={handleGoalBasketClick}
       />
       <InputPage isOpen={isInputPageOpen} onClose={handleClose} onSuccess={handleSuccess} />
     </Box>
