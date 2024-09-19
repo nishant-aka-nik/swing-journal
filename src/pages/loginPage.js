@@ -15,7 +15,7 @@ function Login() {
         console.log('session :', session);
     
             if (session?.user?.role === 'authenticated') {
-                navigate('/success')
+                navigate('/home')
             } else {
                 navigate('/')
             }
