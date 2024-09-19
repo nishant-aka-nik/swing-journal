@@ -27,9 +27,15 @@ function TopPicks() {
                     }
                 }
 
-                const updatedTopPicks = topPicks.map((stock) => {
+                const updatedTopPicks = topPicks
+                .filter((stock) => stock.todays_data.open <= stock.todays_data.close)
+                .map((stock) => {
                     const volumeTimes = (stock.todays_data.volume / stock.todays_data.daily_avg_volume).toFixed(2);
                     const topWick = ((stock.todays_data.high - stock.todays_data.close) / stock.todays_data.high) * 100;
+                    const redCandle = stock.todays_data.open > stock.todays_data.close;
+                    if (redCandle){
+                        return {}
+                    }
                     let profitProbability = 0;
                     let problalityColor = '';
                     if (volumeTimes < 1.5) {
@@ -62,7 +68,7 @@ function TopPicks() {
                 {topPicks.length === 0 && <Typography variant="h6" align='center' padding={2}>No top picks for today</Typography>}
             </Box>
 
-            <Box sx={{ paddingBottom: 5, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+            <Box sx={{ paddingBottom: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                 {topPicks
                     .map((stock, index) => {
                         console.log('inside stock :', stock);

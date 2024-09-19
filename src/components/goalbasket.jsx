@@ -6,7 +6,7 @@ function GoalBasket() {
   return (
     <Box sx={{ p: 2, border: '1px grey', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Box sx={{ width: '100%', padding: 2 }}>
-       <Typography variant="h5" align='center'>Goal Basket</Typography>
+       <Typography variant="h5" align='center'>Under Development</Typography>
       </Box>
     </Box>
   );
